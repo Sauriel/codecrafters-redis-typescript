@@ -23,10 +23,10 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
         connection.write(RESP_PARSER.stringToRESP(payload));
     }
 
-    for (let i = 0; i < data.split("PING").length - 1; i++) {
-      console.log("Sending PONG ...");
-      connection.write("+PONG\r\n");
-    }
+    // for (let i = 0; i < data.split("PING").length - 1; i++) {
+    //   console.log("Sending PONG ...");
+    //   connection.write("+PONG\r\n");
+    // }
   });
 });
 
