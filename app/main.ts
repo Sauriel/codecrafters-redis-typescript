@@ -10,8 +10,8 @@ const DB = new Map<string, string>();
 const server: net.Server = net.createServer((connection: net.Socket) => {
   connection.on("data", (buffer: Buffer) => {
     const data = buffer.toString();
+    console.log("Got data: ", [data]);
     const parsed = RESP_PARSER.parse(buffer);
-    // console.log("Got data: ", parsed);
 
     const command = COMMAND_PARSER.parseRESP(parsed);
     console.log(command);
@@ -28,7 +28,17 @@ const server: net.Server = net.createServer((connection: net.Socket) => {
       case "set":
         const key = command.payload[0] as string;
         const value = command.payload[1] as string;
-        console.log(`setting "${key}" to "${value}"`);
+        const px = command.payload[2];
+        const expireString = command.payload[3];
+        if (px && (px as string).toLowerCase() === "px" && expireString) {
+          const expire = parseInt(expireString as string);
+          setTimeout(() => {
+            DB.delete(key);
+          }, expire);
+          console.log(`setting "${key}" to "${value}" and deleting it in ${expire}ms`);
+        } else {
+          console.log(`setting "${key}" to "${value}"`);
+        }
         DB.set(key, value);
         connection.write(RESP_PARSER.toSimpleString("OK"));
         break;
