@@ -1,10 +1,11 @@
 import * as net from "net";
 
 const server: net.Server = net.createServer((connection: net.Socket) => {
-  connection.on("data", (data: Buffer) => {
-    const dataString = data.toString();
+  connection.on("data", (buffer: Buffer) => {
+    const data = buffer.toString();
 
-    for (let i = 0; i < dataString.split("PING").length - 1; i++) {
+    for (let i = 0; i < data.split("PING").length - 1; i++) {
+      console.log("Sending PONG ...");
       connection.write("+PONG\r\n");
     }
   });
