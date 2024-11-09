@@ -1,10 +1,12 @@
 import type { RESPDataType } from "./respParser";
 
-export type CommandType = "echo" | "ping";
+type PayloadType = Exclude<RESPDataType, RESPDataType[]>[];
+
+export type CommandType = "echo" | "ping" | "set" | "get";
 
 export type Command = {
   type: CommandType;
-  payload: RESPDataType;
+  payload: PayloadType;
 };
 
 export default class CommandParser {
@@ -14,12 +16,12 @@ export default class CommandParser {
     }
 
     const commandType: CommandType = (
-      resp[0] as string
+      resp.shift() as string
     ).toLowerCase() as CommandType;
-    const command = resp[1];
+    const command = resp;
     return {
       type: commandType,
-      payload: command,
+      payload: command as PayloadType,
     };
   }
 }

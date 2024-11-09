@@ -3,7 +3,7 @@ export type RESPDataType = string | number | null | RESPDataType[];
 export default class RESPParser {
   public parse(buffer: Buffer): RESPDataType {
     const input = buffer.toString();
-    console.log([input]);
+    // console.log([input]);
     if (!input) {
       throw new Error("Input cannot be empty");
     }
@@ -12,7 +12,7 @@ export default class RESPParser {
   }
 
   private parseLines(lines: string[]): RESPDataType {
-    console.log(lines);
+    // console.log(lines);
     const type = lines.shift();
     if (!type) {
       throw new Error("Invalid RESP input");
@@ -62,7 +62,23 @@ export default class RESPParser {
     return array;
   }
 
-  public stringToRESP(value: string): string {
-    return `$${value.length}\r\n${value}\r\n`;
+  public toBulkString(value: string | undefined): string {
+    if (value) {
+      return `$${value.length}\r\n${value}\r\n`;
+    } else {
+      return "$-1\r\n";
+    }
+  }
+
+  public toSimpleString(value: string): string {
+    return `+${value}\r\n`;
+  }
+
+  public toSimpleError(message: string): string {
+    return `-${message}\r\n`;
+  }
+
+  public toInteger(value: number): string {
+    return `:${value}\r\n`;
   }
 }
