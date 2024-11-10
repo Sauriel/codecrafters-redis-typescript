@@ -19,6 +19,9 @@ const { values } = parseArgs({
     dbfilename: {
       type: 'string',
     },
+    replicaof: {
+      type: 'string',
+    },
   },
   strict: true,
   allowPositionals: true,
@@ -31,6 +34,10 @@ if (values.dir && values.dbfilename) {
   CONFIG.dbfilename = values.dbfilename;
 
   openDatabase(CONFIG.dir, CONFIG.dbfilename);
+}
+
+if (values.replicaof) {
+  CONFIG.master = values.replicaof;
 }
 
 const server: Server = createServer((connection: Socket) => {

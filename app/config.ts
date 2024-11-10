@@ -1,6 +1,7 @@
 type Config = {
   dir: string | null,
   dbfilename: string | null,
+  master?: string;
 }
 
 const CONFIG: Config = {
