@@ -6,6 +6,7 @@ import get from "./get";
 import ping from "./ping";
 import set from "./set";
 import config from "./config";
+import keys from "./keys";
 
 export default function execute(connection: Socket, command: Command) {
   switch (command.type) {
@@ -23,6 +24,9 @@ export default function execute(connection: Socket, command: Command) {
       break;
     case "config":
       config(connection, command.payload);
-      break
+      break;
+    case "keys":
+      keys(connection, command.payload);
+      break;
   }
 };

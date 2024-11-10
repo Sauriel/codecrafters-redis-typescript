@@ -9,7 +9,8 @@ export default function config(connection: Socket, payload: PayloadType) {
   const configKey = payload[1] as string;
 
   if (configType.toLowerCase() === "get" && configKey) {
-    const configValue = CONFIG.get(configKey);
+    // @ts-ignore this should work
+    const configValue = CONFIG[configKey];
     console.log(`Getting config for "${configKey}" => "${configValue}"`);
     connection.write(RESPParser.toArray([RESPParser.toBulkString(configKey), RESPParser.toBulkString(configValue)]));
   }

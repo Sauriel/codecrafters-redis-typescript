@@ -4,6 +4,7 @@ import RESPParser from "./respParser";
 import CommandParser from "./commandParser";
 import execute from "./commands";
 import CONFIG from "./config";
+import { openDatabase } from "./database";
 
 const { values } = parseArgs({
   args: Bun.argv,
@@ -19,14 +20,13 @@ const { values } = parseArgs({
   allowPositionals: true,
 });
 
-if (values.dir) {
+if (values.dir && values.dbfilename) {
   console.log(`arg --dir set to "${values.dir}"`);
-  CONFIG.set("dir", values.dir);
-}
-
-if (values.dbfilename) {
+  CONFIG.dir = values.dir;
   console.log(`arg --dbfilename set to "${values.dbfilename}"`);
-  CONFIG.set("dbfilename", values.dbfilename);
+  CONFIG.dbfilename = values.dbfilename;
+
+  openDatabase(CONFIG.dir, CONFIG.dbfilename);
 }
 
 const server: Server = createServer((connection: Socket) => {
