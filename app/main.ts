@@ -9,6 +9,10 @@ import { openDatabase } from "./database";
 const { values } = parseArgs({
   args: Bun.argv,
   options: {
+    port: {
+      type: 'string',
+      default: "6379",
+    },
     dir: {
       type: 'string',
     },
@@ -41,4 +45,4 @@ const server: Server = createServer((connection: Socket) => {
   });
 });
 
-server.listen(6379, "127.0.0.1");
+server.listen(Number.parseInt(values.port!), "127.0.0.1");
