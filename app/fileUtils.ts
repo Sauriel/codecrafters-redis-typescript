@@ -1,5 +1,6 @@
 import { createWriteStream, existsSync, readFileSync } from "fs";
 import { join } from "path";
+import CONFIG from "./config";
 
 type DbEntry = {
   key: string,
@@ -179,7 +180,7 @@ function readDatabaseSections(data: Buffer, offset: number): { databases: DbEntr
   }
 }
 
-function find(entries: DbEntry[], query: string): string [] {
+function find(entries: DbEntry[], query: string): string[] {
   if (query === "*") {
     return entries.map(e => e.key);
   } else {
@@ -187,7 +188,7 @@ function find(entries: DbEntry[], query: string): string [] {
   }
 }
 
-function read(dir: string, filename: string, query: string): string[] {
+function loadDBs(dir: string, filename: string): DbEntry[][] {
   const path = join(dir, filename);
   const data = readFileSync(path);
   let offset = 0;
@@ -209,10 +210,24 @@ function read(dir: string, filename: string, query: string): string[] {
   const databaseResult = readDatabaseSections(data, offset);
   offset  = databaseResult.newOffset;
 
-  return find(databaseResult.databases.flat(), query);
+  return databaseResult.databases;
+}
+
+function findKeys(query: string): string[] {
+  const databases = loadDBs(CONFIG.dir!, CONFIG.dbfilename!);
+
+  return find(databases.flat(), query);
+}
+
+function get(key: string): string | undefined {
+  const databases = loadDBs(CONFIG.dir!, CONFIG.dbfilename!);
+
+  return databases.flat().find(e => e.key === key)?.value;
 }
 
 export {
   createIfNotExist,
-  read
+  loadDBs,
+  findKeys,
+  get,
 }
