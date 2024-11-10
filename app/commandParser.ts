@@ -2,7 +2,7 @@ import type { RESPDataType } from "./respParser";
 
 export type PayloadType = Exclude<RESPDataType, RESPDataType[]>[];
 
-export type CommandType = "echo" | "ping" | "set" | "get";
+export type CommandType = "echo" | "ping" | "set" | "get" | "config";
 
 export type Command = {
   type: CommandType;

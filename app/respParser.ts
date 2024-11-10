@@ -81,4 +81,8 @@ export default class RESPParser {
   public static toInteger(value: number): string {
     return `:${value}\r\n`;
   }
+
+  public static toArray(value: string[]): string {
+      return `*${value.length}\r\n${value.join("")}`;
+  }
 }

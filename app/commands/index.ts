@@ -1,10 +1,11 @@
 import { Socket } from "net";
 
+import type { Command } from "../commandParser";
 import echo from "./echo";
 import get from "./get";
 import ping from "./ping";
 import set from "./set";
-import type { Command } from "../commandParser";
+import config from "./config";
 
 export default function execute(connection: Socket, command: Command) {
   switch (command.type) {
@@ -20,5 +21,8 @@ export default function execute(connection: Socket, command: Command) {
     case "get":
       get(connection, command.payload);
       break;
+    case "config":
+      config(connection, command.payload);
+      break
   }
 };
