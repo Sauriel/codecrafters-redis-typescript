@@ -1,7 +1,7 @@
 export type RESPDataType = string | number | null | RESPDataType[];
 
 export default class RESPParser {
-  public parse(buffer: Buffer): RESPDataType {
+  public static parse(buffer: Buffer): RESPDataType {
     const input = buffer.toString();
     // console.log([input]);
     if (!input) {
@@ -11,7 +11,7 @@ export default class RESPParser {
     return this.parseLines(lines);
   }
 
-  private parseLines(lines: string[]): RESPDataType {
+  private static parseLines(lines: string[]): RESPDataType {
     // console.log(lines);
     const type = lines.shift();
     if (!type) {
@@ -34,7 +34,7 @@ export default class RESPParser {
     }
   }
 
-  private parseBulkString(type: string, lines: string[]): string | null {
+  private static parseBulkString(type: string, lines: string[]): string | null {
     const length = parseInt(type.slice(1), 10);
     if (length === -1) {
       return null; // Null bulk string
@@ -48,7 +48,7 @@ export default class RESPParser {
     return value;
   }
 
-  private parseArray(type: string, lines: string[]): RESPDataType {
+  private static parseArray(type: string, lines: string[]): RESPDataType {
     const length = parseInt(type.slice(1), 10);
     if (length === -1) {
       return null; // Null array
@@ -62,7 +62,7 @@ export default class RESPParser {
     return array;
   }
 
-  public toBulkString(value: string | undefined): string {
+  public static toBulkString(value: string | undefined): string {
     if (value) {
       return `$${value.length}\r\n${value}\r\n`;
     } else {
@@ -70,15 +70,15 @@ export default class RESPParser {
     }
   }
 
-  public toSimpleString(value: string): string {
+  public static toSimpleString(value: string): string {
     return `+${value}\r\n`;
   }
 
-  public toSimpleError(message: string): string {
+  public static toSimpleError(message: string): string {
     return `-${message}\r\n`;
   }
 
-  public toInteger(value: number): string {
+  public static toInteger(value: number): string {
     return `:${value}\r\n`;
   }
 }

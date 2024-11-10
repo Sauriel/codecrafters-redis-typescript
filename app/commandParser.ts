@@ -1,6 +1,6 @@
 import type { RESPDataType } from "./respParser";
 
-type PayloadType = Exclude<RESPDataType, RESPDataType[]>[];
+export type PayloadType = Exclude<RESPDataType, RESPDataType[]>[];
 
 export type CommandType = "echo" | "ping" | "set" | "get";
 
@@ -10,7 +10,7 @@ export type Command = {
 };
 
 export default class CommandParser {
-  public parseRESP(resp: RESPDataType): Command {
+  public static parseRESP(resp: RESPDataType): Command {
     if (!Array.isArray(resp)) {
       throw new Error("Is no array");
     }
