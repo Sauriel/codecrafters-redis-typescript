@@ -9,7 +9,16 @@ function openDatabase(dir: string, filename: string) {
   loadDBs(dir, filename)
     .flat()
     .forEach(entry => {
-      DB.set(entry.key, entry.value);
+      let isExpired = false;
+      if (entry.expireLong) {
+        isExpired = entry.expireLong < Date.now();
+      } else if (entry.expireInt) {
+        isExpired = (entry.expireInt * 1000) < Date.now();
+      }
+
+      if (!isExpired) {
+        DB.set(entry.key, entry.value);
+      }
     });
 }
 

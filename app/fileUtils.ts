@@ -145,21 +145,21 @@ function readDatabaseSections(data: Buffer, offset: number): { databases: DbEntr
         case 0xFC:
           // expire in ms
           offset++;
-          const msExpire = data.slice(offset, offset + 8).toString(ENCODING);
+          const msExpire = data.slice(offset, offset + 8).readBigInt64LE();
           offset += 8;
           const msResult = readKeyValue(data, offset);
           entry = msResult.entry;
-          entry.expireLong = BigInt(msExpire);
+          entry.expireLong = msExpire;
           offset = msResult.newOffset;
           break;
         case 0xFD:
           // expire in s
           offset++;
-          const sExpire = data.slice(offset, offset + 4).toString(ENCODING);
+          const sExpire = data.slice(offset, offset + 4).readInt16LE();
           offset += 4;
           const sResult = readKeyValue(data, offset);
           entry = sResult.entry;
-          entry.expireInt = Number.parseInt(sExpire);
+          entry.expireInt = sExpire;
           offset = sResult.newOffset;
           break;
         default:
@@ -192,6 +192,8 @@ function loadDBs(dir: string, filename: string): DbEntry[][] {
   const path = join(dir, filename);
   const data = readFileSync(path);
   let offset = 0;
+
+  console.log(data.toString("hex"));
 
   // Read and parse the header (first 9 bytes)
   const header = data.slice(0, 9).toString(ENCODING);
